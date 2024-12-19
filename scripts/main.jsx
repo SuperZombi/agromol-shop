@@ -19,6 +19,54 @@ const NotFound = () => (
 		<Link to="/">На головну</Link>
 	</div>
 );
+
+
+const App = () => {
+	const [cart, setCart] = useState(JSON.parse(localStorage.getItem('cart')) || []);
+	const [toasts, setToasts] = useState([])
+	const addToCart = (item_id)=>{
+		setCart(prev=>[...prev, item_id])
+		setToasts(prev=>[...prev, "Товар додано у кошик"])
+	}
+	const removeFromCart = (item_id)=>{
+		let index = cart.lastIndexOf(item_id);
+		if (index !== -1) {
+			let newArray = cart.slice();
+			newArray.splice(index, 1)
+			setCart(newArray)
+		}
+	}
+	useEffect(_=>{
+		localStorage.setItem('cart', JSON.stringify(cart))
+	},[cart])
+
+return (
+	<HashRouter>
+		<nav className="header">
+			<Link to="/">
+				<img src="images/logo.png"/>
+			</Link>
+			<Link to="/products">Товари</Link>
+			{ cart.length > 0 ?
+				<Link to="/cart" className="cart-icon" count={Math.min(9,cart.length)}><i className="fa-solid fa-basket-shopping"></i></Link>
+			: ""}
+		</nav>
+
+		<Switch>
+			<Route path="/" exact component={Home} />
+			<Route path="/products" exact component={ProductsList} />
+			<Route path="/product/:key" exact render={() => <ProductPage addToCart={addToCart} />} />
+			<Route path="/cart" exact render={() => <Cart items={cart} removeItem={removeFromCart} />} />
+			<Route path="*" exact component={NotFound} />
+		</Switch>
+		<div className="toasts-area">
+			{toasts.map((val,i)=>(
+				<Toast key={i} text={val}/>
+			))}
+		</div>
+	</HashRouter>
+)};
+
 const Modal = ({onClose, children}) => {
 	const [modalOpen, setOpen] = useState(false)
 	useEffect(_=>{
@@ -37,25 +85,21 @@ const Modal = ({onClose, children}) => {
 		</div>
 	)
 }
-
-
-const App = () => (
-	<HashRouter>
-		<nav className="header">
-			<Link to="/">
-				<img src="images/logo.png"/>
-			</Link>
-			<Link to="/products">Товари</Link>
-		</nav>
-
-		<Switch>
-			<Route path="/" exact component={Home} />
-			<Route path="/products" exact component={ProductsList} />
-			<Route path="/product/:key" exact component={ProductPage} />
-			<Route path="*" exact component={NotFound} />
-		</Switch>
-	</HashRouter>
-);
+const Toast = ({text}) => {
+	const [hidden, setHidden] = useState(false)
+	const [display, setDisplay] = useState(true)
+	useEffect(_=>{
+		setTimeout(_=>{
+			setHidden(true)
+			setTimeout(_=>setDisplay(false), 500)
+		}, 3000)
+	})
+	return display ? (
+		<div className={`toast ${hidden ? "hidden" : ""}`}>
+			{text}
+		</div>
+	) : ""
+}
 
 const ProductsList = () => {
 	const [products, setProducts] = useState([])
@@ -95,7 +139,7 @@ const ProductsItem = ({name, image, price, id}) => (
 	</Link>
 )
 
-const ProductPage = () => {
+const ProductPage = ({addToCart}) => {
 	const { key } = useParams();
 	const [product, setProduct] = useState()
 	const [show_not_found, setNotFounded] = useState(false)
@@ -109,15 +153,15 @@ const ProductPage = () => {
 				setNotFounded(true)
 			}
 		})
-	}, [])
+	}, [key])
 	if (show_not_found) return (<Fragment><NotFound/></Fragment>)
 	if (!product) return (<img src="images/loader.svg" className="loader"/>)
 
 	const addToCartHandler = () => {
-		alert("Цей функціонал ще не реалізований")
+		addToCart(product.id)
 	}
 	return (
-		<Fragment>
+		<div className="product-page-wrapper">
 			<div className="product-page">
 				{imgViewOpen ? <Modal onClose={_=>setImgView(false)}><img src={product.img}/></Modal> : ""}
 				<div className="image back-loader" onClick={_=>setImgView(true)}>
@@ -140,7 +184,57 @@ const ProductPage = () => {
 					<button onClick={addToCartHandler}>Додати в кошик</button>
 				</div>
 			</div>
-		</Fragment>
+		</div>
+	)
+}
+
+
+const CartItem = ({id, name, img, price, amount, total_price, removeItem}) => {
+	return (
+		<div className="item">
+			<img src={img} className="back-loader"/>
+			<div className="info">
+				<span className="name">{name}</span>
+				<span className="price">{price}грн/шт</span>
+			</div>
+			<div className="total-info">
+				<span className="price">{total_price}грн</span>
+				<span className="amount">{amount}шт</span>
+			</div>
+			<i className="fa-solid fa-trash delete" onClick={_=>removeItem(id)}></i>
+		</div>
+	)
+}
+const Cart = ({items, removeItem}) => {
+	const [cart_items, setCartItems] = useState([])
+	const [total_price, setTotalPrice] = useState(0)
+	const [loading, setLoading] = useState(true)
+	useEffect(_=>{
+		setLoading(true)
+		API.get_cart_from_items(items).then(data=>{
+			setTotalPrice(data.total_price)
+			setCartItems(data.products)
+			setLoading(false)
+		})
+	},[items])
+	return (
+		<div className="cart-page">
+			<h2>Кошик</h2>
+			{items.length === 0 ? <h3>Ваш кошик пустий</h3> :
+				loading ? <img src="images/loader.svg" className="loader"/> :
+				<Fragment>
+					<h3 style={{marginTop:0}}>Товарів у кошику: {items.length}</h3>
+					<div className="cart-items">
+						{cart_items.map((item, key)=>(
+							<CartItem {...item} key={key} removeItem={removeItem}/>
+						))}
+					</div>
+					<div className="total-price">
+						<span>Разом:</span><span className="price">{total_price}грн</span>
+					</div>
+				</Fragment>
+			}
+		</div>
 	)
 }
 

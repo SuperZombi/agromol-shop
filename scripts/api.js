@@ -1,14 +1,38 @@
 class API_provider {
 	constructor(){}
 	get_all_products(){
-		return this._timeout(this.products, 1000)
+		return this._timeout(this.products)
 	}
 	get_product_by_id(id){
-		return this._timeout(
-			this.products.find(item=>item.id == id)
-		, 1000)
+		return this._timeout(this.products.find(item=>item.id == id))
 	}
-	_timeout(answer, time){
+	get_cart_from_items(items_arr){
+		let answer = {}
+		let total_price = 0
+		items_arr.forEach(item_id=>{
+			let product = this._get_product_by_id(item_id)
+			total_price = total_price + product.price
+			if (Object.keys(answer).includes(product.id)){
+				answer[product.id]["amount"] = answer[item_id]["amount"] + 1
+				answer[product.id]["total_price"] = answer[item_id]["total_price"] + product.price
+			}
+			else {
+				answer[product.id] = {
+					id: product.id,
+					amount: 1, name: product.name,
+					img: product.img,
+					price: product.price,
+					total_price: product.price,
+				}
+			}
+			
+		})
+		return this._timeout({products: Object.values(answer), total_price: total_price}, 0)
+	}
+	_get_product_by_id(id){
+		return this.products.find(item=>item.id == id)
+	}
+	_timeout(answer, time=500){
 		return new Promise(resolve=>{
 			setTimeout(_=>{
 				resolve(answer)

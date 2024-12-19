@@ -23,6 +23,27 @@
 	}
 }
 
+.cart-icon {
+	position: relative;
+	font-size: 20px;
+	margin-left: auto;
+}
+.cart-icon[count]::after{
+	content: attr(count);
+	position: absolute;
+	font-family: monospace;
+	color: white;
+	background: red;
+	border-radius: 50%;
+	width: 14.5px;
+	height: 14px;
+	font-size: 13px;
+	line-height: 14px;
+	text-align: center;
+	top: 50%;
+	left: 50%;
+}
+
 .products-list {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -81,9 +102,15 @@
 }
 
 
+.product-page-wrapper {
+	display: flex;
+	justify-content: center;
+	overflow-x: hidden;
+}
 .product-page {
 	display: flex;
 	padding: 1rem;
+	padding-top: 2rem;
 	gap: 1rem;
 	font-size: 1.1rem;
 	& .image {
@@ -131,6 +158,7 @@
 @media (max-width:600px){
 	.product-page {
 		font-size: 1rem;
+		padding-top: 1rem;
 		flex-direction: column;
 		align-items: center;
 		text-align: center;
@@ -140,5 +168,90 @@
 		& .info table {
 			width: 100%;
 		}
+	}
+}
+
+
+.cart-page {
+	text-align: center;
+	height: calc(100dvh - 50px);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+.cart-items {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5em;
+	max-width: 550px;
+	margin: 0 auto;
+	padding: 0.5em 0.25em;
+	overflow-y: auto;
+	scrollbar-width: thin;
+	& .item {
+		flex-shrink: 0;
+		display: grid;
+		grid-template-columns: 100px 1fr 0.5fr 1.75em;
+		padding: 0 5px;
+		align-items: center;
+		justify-content: center;
+		height: 100px;
+		gap: 1em;
+		background: #c1e1f8;
+		border-radius: 8px;
+		& img {
+			height: 90%;
+			width: 100%;
+			object-fit: cover;
+			border-radius: 6px;
+		}
+		& .info {
+			display: flex;
+			flex-direction: column;
+			gap: 0.5em;
+			& .name {
+				font-weight: bold;
+				font-size: 1.1em;
+			}
+			& .price { color: #00bc23; }
+		}
+		& .total-info {
+			display: flex;
+			flex-direction: column;
+			gap: 0.25em;
+			& .price {
+				color: red;
+				font-weight: bold;
+			}
+			& .amount { font-size: 0.9em; }
+		}
+		& .delete {
+			color: red;
+			cursor: pointer;
+			opacity: 0.5;
+			transition: 0.15s;
+			&:hover {
+				opacity: 1;
+			}
+		}
+	}
+}
+@media (max-width:600px){
+	.cart-items {
+		font-size: 0.85rem;
+	}
+}
+
+.total-price {
+	display: flex;
+	justify-content: center;
+	gap: 0.5em;
+	padding: 1em;
+	border-top: 1px solid;
+	width: 100%;
+	font-size: 1.1em;
+	font-weight: bold;
+	& .price {
+		color: red;
 	}
 }

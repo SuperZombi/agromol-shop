@@ -115,3 +115,28 @@ button:hover::before {
 		min-width: 75%;
 	}
 }
+
+.toasts-area {
+	position: fixed;
+	bottom: 5px;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 5px;
+	max-height: 50dvh;
+	& .toast {
+		background: #c1e1f8;
+		padding: 10px 20px;
+		border-radius: 8px;
+		transition: 0.5s;
+		&.hidden {
+			transform: translateY(-100%);
+			opacity: 0;
+		}
+		@starting-style {
+			transform: translateY(100%);
+			opacity: 0;
+		}
+	}
+}
