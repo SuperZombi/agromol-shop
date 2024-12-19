@@ -1,7 +1,5 @@
 class API_provider {
-	constructor(){
-
-	}
+	constructor(){}
 	get_all_products(){
 		return this._timeout(this.products, 1000)
 	}
@@ -20,7 +18,7 @@ class API_provider {
 	products = [
 		{
 			id: "1", name: "Сир плавлений «Гриби»",
-			img: "http://agromol.com.ua/wp-content/uploads/2020/04/sir-griby.jpg",
+			img: "https://lh6.googleusercontent.com/proxy/Li9K2eQt2fPJdKNu8cLjx-c0fpQfa0HmFgq_80R280LSPSPITZAGkS2TqV8PyGV0r3WBivFN9lLprhGuy8T80S-BUMY8bN0s5fWyCpsKP-ep7dCUqrARt4Oz",
 			price: 20, weight: 100,
 		},
 		{
@@ -30,12 +28,12 @@ class API_provider {
 		},
 		{
 			id: "3", name: "Десерт сирковий «Кокос»",
-			img: "http://agromol.com.ua/wp-content/uploads/2020/04/desert-sirkoviy-kokos-1024x683.jpg",
+			img: "https://lh6.googleusercontent.com/proxy/DpOTTz2gRGy6U-ZQWKrrirfWAo8G2jgsO_WFX60MyMjMAjpYLpOA8bWYwLAZ1bkXqnNSx3u4W0uTUPztzHO8A3_2laybo2fPClocsTwZvTy8qwEuCyGmSzRA3MWEknBkdyGsof2f",
 			price: 30, weight: 170,
 		},
 		{
 			id: "4", name: "Десерт сирковий «Родзинки»",
-			img: "http://agromol.com.ua/wp-content/uploads/2020/04/desert-sirkoviy-rodzinki-1024x683.jpg",
+			img: "https://lh6.googleusercontent.com/proxy/ru_2aSQyCVSkf8nGmKE8TawVptBBb-eG531_UQf5mPKbXIL-wtElBWLbrEB3XvzBlwMKM_SfPZmgINXx2H1gQV2I6pWEqxz6UmTLlh0uISddLJKTgpnxiE3rQiQwJD-0-Bxba49AeEeu",
 			price: 30, weight: 170,
 		},
 		{
