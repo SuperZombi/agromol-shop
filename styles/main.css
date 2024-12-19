@@ -92,6 +92,7 @@
 		width: 400px;
 		max-width: 95dvw;
 		height: 100%;
+		min-height: 150px;
 		max-height: 300px;
 		display: flex;
 		cursor: zoom-in;

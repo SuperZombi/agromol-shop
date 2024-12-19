@@ -120,8 +120,8 @@ const ProductPage = () => {
 		<Fragment>
 			<div className="product-page">
 				{imgViewOpen ? <Modal onClose={_=>setImgView(false)}><img src={product.img}/></Modal> : ""}
-				<div className="image back-loader">
-					<img src={product.img} onClick={_=>setImgView(true)}/>
+				<div className="image back-loader" onClick={_=>setImgView(true)}>
+					<img src={product.img}/>
 				</div>
 				<div className="info">
 					<div className="name">{product.name}</div>

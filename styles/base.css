@@ -91,6 +91,7 @@ button:hover::before {
 		background: white;
 		height: 90%;
 		max-width: 85%;
+		min-width: 50%;
 		width: fit-content;
 		position: relative;
 		border-radius: 12px;
@@ -110,5 +111,7 @@ button:hover::before {
 		max-width: 95%;
 		height: fit-content;
 		max-height: 85%;
+		min-height: 50%;
+		min-width: 75%;
 	}
 }
