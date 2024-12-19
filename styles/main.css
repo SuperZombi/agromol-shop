@@ -125,6 +125,7 @@
 		height: 100%;
 		width: 100%;
 		object-fit: contain;
+		margin: auto;
 	}
 }
 @media (max-width:600px){
