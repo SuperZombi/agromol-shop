@@ -19,6 +19,25 @@ const NotFound = () => (
 		<Link to="/">На головну</Link>
 	</div>
 );
+const Modal = ({onClose, children}) => {
+	const [modalOpen, setOpen] = useState(false)
+	useEffect(_=>{
+		setTimeout(_=>setOpen(true), 0)
+	}, [])
+	const handleClose = () => {
+		setOpen(false)
+		setTimeout(_=>onClose(), 500)
+	}
+	return (
+		<div className={`modal ${modalOpen ? "open" : ""}`}>
+			<div className="content">
+				<i className="fa-solid fa-circle-xmark close" onClick={handleClose}></i>
+				{children}
+			</div>
+		</div>
+	)
+}
+
 
 const App = () => (
 	<HashRouter>
@@ -44,7 +63,7 @@ const ProductsList = () => {
 		API.get_all_products().then(data=>{
 			setProducts(data)
 		})
-	})
+	}, [])
 	return (
 		<div className="products-list">
 			{products.length === 0 ?
@@ -80,6 +99,7 @@ const ProductPage = () => {
 	const { key } = useParams();
 	const [product, setProduct] = useState()
 	const [show_not_found, setNotFounded] = useState(false)
+	const [imgViewOpen, setImgView] = useState(false)
 
 	useEffect(_=>{
 		API.get_product_by_id(key).then(data=>{
@@ -89,7 +109,7 @@ const ProductPage = () => {
 				setNotFounded(true)
 			}
 		})
-	})
+	}, [])
 	if (show_not_found) return (<Fragment><NotFound/></Fragment>)
 	if (!product) return (<img src="images/loader.svg" className="loader"/>)
 
@@ -97,27 +117,30 @@ const ProductPage = () => {
 		alert("Цей функціонал ще не реалізований")
 	}
 	return (
-		<div className="product-page">
-			<div className="image back-loader">
-				<img src={product.img}/>
+		<Fragment>
+			<div className="product-page">
+				{imgViewOpen ? <Modal onClose={_=>setImgView(false)}><img src={product.img}/></Modal> : ""}
+				<div className="image back-loader">
+					<img src={product.img} onClick={_=>setImgView(true)}/>
+				</div>
+				<div className="info">
+					<div className="name">{product.name}</div>
+					<table>
+					<tbody>
+						<tr>
+							<td>Вага:</td>
+							<td>{product.weight}г</td>
+						</tr>
+						<tr>
+							<td>Ціна:</td>
+							<td className="price">{product.price}грн</td>
+						</tr>
+					</tbody>
+					</table>
+					<button onClick={addToCartHandler}>Додати в кошик</button>
+				</div>
 			</div>
-			<div className="info">
-				<div className="name">{product.name}</div>
-				<table>
-				<tbody>
-					<tr>
-						<td>Вага:</td>
-						<td>{product.weight}г</td>
-					</tr>
-					<tr>
-						<td>Ціна:</td>
-						<td className="price">{product.price}грн</td>
-					</tr>
-				</tbody>
-				</table>
-				<button onClick={addToCartHandler}>Додати в кошик</button>
-			</div>
-		</div>
+		</Fragment>
 	)
 }
 
