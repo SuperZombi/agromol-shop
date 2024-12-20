@@ -1,5 +1,5 @@
-const { useState, useEffect, Fragment } = React;
-const { HashRouter, Switch, Route, Link, useParams} = ReactRouterDOM;
+const { useState, useEffect, useRef, Fragment } = React;
+const { HashRouter, Switch, Route, Link, useParams, useLocation, useHistory } = ReactRouterDOM;
 
 const API = new API_provider()
 
@@ -54,7 +54,7 @@ return (
 
 		<Switch>
 			<Route path="/" exact component={Home} />
-			<Route path="/products" exact component={ProductsList} />
+			<Route path="/products" exact component={ProductsPage} />
 			<Route path="/product/:key" exact render={() => <ProductPage addToCart={addToCart} />} />
 			<Route path="/cart" exact render={() => <Cart items={cart} removeItem={removeFromCart} />} />
 			<Route path="*" exact component={NotFound} />
@@ -101,28 +101,109 @@ const Toast = ({text}) => {
 	) : ""
 }
 
-const ProductsList = () => {
+
+const ProductsPage = () => {
 	const [products, setProducts] = useState([])
+	const [loading, setLoading] = useState(true)
+	const [filters_menu_open, setFiltersMenuOpen] = useState(false)
+	const [all_filters, setAllFilters] = useState([])
+	const [selectedFilters, setSelectedFilters] = useState({})
+	const location = useLocation()
+	const history = useHistory()
+	const requestId = useRef(0)
+	const get_filters = () => {
+		return Object.fromEntries(
+			Object.entries(selectedFilters).filter(([key, values]) => values.length > 0)
+		)
+	}
+	const updateURLWithFilters = (filters) => {
+		const params = new URLSearchParams()
+		Object.keys(filters).forEach(key => {
+			if (filters[key].length > 0) {
+				params.set(key, filters[key].join(','))
+			}
+		})
+		history.push({ search: params.toString() })
+	}
 	useEffect(_=>{
-		API.get_all_products().then(data=>{
-			setProducts(data)
+		API.get_all_filters().then(data=>{
+			setAllFilters(data)
+			const params = new URLSearchParams(location.search)
+			const filtersFromURL = {}
+			params.forEach((value, key) => {
+				const filterExists = data.find(filter => filter.name === key);
+				if (filterExists) {
+					filtersFromURL[key] = value.split(',')
+				}
+			})
+			setSelectedFilters(filtersFromURL);
 		})
 	}, [])
-	return (
-		<div className="products-list">
-			{products.length === 0 ?
-				(
-					<img src="images/loader.svg" className="loader"/>
-				) : products.map((value,i) => (
-					<ProductsItem
-						name={value.name}
-						image={value.img}
-						price={value.price}
-						id={value.id}
-						key={i}
-					/>)
-				)
+	useEffect(_=>{
+		const currentRequestId = requestId.current + 1;
+		requestId.current = currentRequestId;
+		setLoading(true)
+		let filters = get_filters()
+		API.get_products(filters).then(data=>{
+			if (currentRequestId === requestId.current) {
+				setProducts(data)
+				setLoading(false)
 			}
+		})
+		updateURLWithFilters(filters)
+	}, [selectedFilters])
+
+	const changeFilter = (name, new_values)=>{
+		let temp = {}
+		temp[name] = new_values
+		setSelectedFilters(prev=>Object.assign({}, prev, temp))
+	}
+	return (
+		<div className="products-page">
+			<div className={`filters-menu ${filters_menu_open ? "open" : ""}`}>
+				<i className="fa-solid fa-circle-xmark close" onClick={_=>setFiltersMenuOpen(false)}></i>
+				<div className="scrollable">
+					{all_filters.map((val,k)=>(
+						<ProductFilter key={k}
+							name={val.name}
+							title={val.title}
+							items={val.items}
+							selected={selectedFilters[val.name]}
+							onChange={changeFilter}
+						/>
+					))}
+				</div>
+			</div>
+			<div className="scrollable">
+				<div className={`filters-icon ${Object.keys(get_filters()).length > 0 ? "active" : ""}`}>
+					<div>
+						<button onClick={_=>setFiltersMenuOpen(true)}>
+							<i className="fa-solid fa-filter"></i>
+						</button>
+					</div>
+				</div>
+				{ loading ? <img src="images/loader.svg" className="loader"/> :
+					products.length === 0 ? (
+						<div style={{textAlign: "center"}}>
+							<hr/>
+							<h3>Нічого не знайдено</h3>
+							<h3>(◡_◡)</h3>
+						</div>
+					) : (
+						<div className="products-list">
+							{products.map((value,i) => (
+								<ProductsItem
+									name={value.name}
+									image={value.img}
+									price={value.price}
+									id={value.id}
+									key={i}
+								/>)
+							)}
+						</div>
+					)
+				}
+			</div>
 		</div>
 	)
 }
@@ -138,6 +219,41 @@ const ProductsItem = ({name, image, price, id}) => (
 		</div>
 	</Link>
 )
+const ProductFilter = ({name, title, items, selected, onChange}) => {
+	const [selectedValues, setSelectedValues] = useState(selected || [])
+	const handler = (event)=>{
+		const value = event.target.value;
+		setSelectedValues((prev) =>
+			event.target.checked
+				? [...prev, value]
+				: prev.filter((v) => v != value)
+		);
+	}
+	const isFirstRender = useRef(true);
+	useEffect(() => {
+		if (isFirstRender.current) {
+			isFirstRender.current = false;
+		} else {
+			onChange(name, selectedValues)
+		}
+	}, [selectedValues])
+	return (
+		<details className={`filter ${selectedValues.length > 0 ? "active": ""}`} open={true}>
+			<summary><span>{title}</span></summary>
+			<div className="content">
+				{items.map((val, i)=>(
+					<label key={i}>
+						<input type="checkbox" name={name} value={val.id}
+							onChange={handler} 
+							checked={selectedValues.includes(val.id) ? true : false}
+						/>
+						<span>{val.name}</span>
+					</label>
+				))}
+			</div>
+		</details>
+	)
+}
 
 const ProductPage = ({addToCart}) => {
 	const { key } = useParams();

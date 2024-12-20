@@ -5,7 +5,6 @@
 	background: #c1e1f8;
 	padding: 0 1rem;
 	gap: 0.5rem;
-
 	& img {
 		height: 90%;
 	}
@@ -17,6 +16,7 @@
 		padding: 0 0.5rem;
 		display: flex;
 		align-items: center;
+		user-select: none;
 		&:hover{
 			color: #1163b3;
 		}
@@ -44,9 +44,77 @@
 	left: 50%;
 }
 
+
+.products-page {
+	display: flex;
+	position: relative;
+	height: calc(100dvh - 50px);
+	& .scrollable {
+		width: 100%;
+		height: 100%;
+		overflow-y: auto;
+		position: relative;
+	}
+}
+.filters-icon { display: none; }
+.filters-icon.active div{
+	position: relative;
+	&::after {
+		content: '';
+		width: 12px;
+		height: 12px;
+		background: red;
+		border-radius: 50%;
+		position: absolute;
+		top: 0;
+		right: 0;
+		transform: translate(20%, -20%);
+	}
+}
+.filters-menu {
+	min-width: 300px;
+	background: #f2f2f2;
+	z-index: 1;
+	transition: 0.5s;
+	font-size: 1.25rem;
+	& .close {
+		color: red;
+		padding: 0.5rem;
+		display: none;
+		position: absolute;
+		z-index: 2;
+		top: 0; right: 0;
+	}
+	& .scrollable {
+		overflow-y: auto;
+		overflow-y: auto;
+		scrollbar-width: thin;
+	}
+}
+@media (max-width:800px){
+	.products-page{
+		flex-direction: column;
+	}
+	.filters-icon {
+		display: flex;
+		justify-content: center;
+		padding-top: 0.5rem;
+	}
+	.filters-menu {
+		position: absolute;
+		inset: 0;
+		transform: translateX(-100%);
+		&.open {
+			transform: translateX(0);
+		}
+		& .close { display: block; }
+	}
+}
+
 .products-list {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	grid-auto-rows: min-content;
 	gap: 1rem;
 	padding: 1rem;
 	font-size: 1.125rem;
@@ -70,7 +138,7 @@
 	text-align: center;
 	display: grid;
 	transition: 0.2s;
-
+	user-select: none;
 	&:hover{
 		transform: translateY(-5px);
 	}
@@ -98,6 +166,47 @@
 			font-weight: bold;
 			color: #00bc23;
 		}
+	}
+}
+
+
+.filter {
+	padding: 0.5em;
+	border-bottom: 1px solid;
+	user-select: none;
+	&:last-child{
+		border-bottom: 0;
+	}
+	& summary {
+		cursor: pointer;
+	}
+	& .content {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25em;
+		padding: 0.5em 0;
+		& label {
+			display: flex;
+			gap: 0.25em;
+			width: fit-content;
+			cursor: cell;
+			& input[type="checkbox"]{
+				zoom: 1.1;
+				cursor: cell;
+			}
+		}
+	}
+}
+.filter.active summary span{
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	&::after{
+		content: '';
+		background: red;
+		width: 10px;
+		height: 10px;
+		border-radius: 50%;
 	}
 }
 
