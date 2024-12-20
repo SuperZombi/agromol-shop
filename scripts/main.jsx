@@ -210,7 +210,6 @@ const Cart = ({items, removeItem}) => {
 	const [total_price, setTotalPrice] = useState(0)
 	const [loading, setLoading] = useState(true)
 	useEffect(_=>{
-		setLoading(true)
 		API.get_cart_from_items(items).then(data=>{
 			setTotalPrice(data.total_price)
 			setCartItems(data.products)
