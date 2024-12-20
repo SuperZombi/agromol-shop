@@ -176,6 +176,9 @@
 	}
 	& summary {
 		cursor: pointer;
+		& span {
+			padding: 0 0.4rem;
+		}
 	}
 	& .content {
 		display: flex;
