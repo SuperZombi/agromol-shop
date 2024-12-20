@@ -6,9 +6,9 @@ const API = new API_provider()
 const Home = () => (
 	<Fragment>
 		<h1 align="center">Головна сторінка</h1>
-		<div align="center">
+		<p align="center">
 			<Link to="/products"><button>Товари</button></Link>
-		</div>
+		</p>
 	</Fragment>
 );
 const NotFound = () => (
