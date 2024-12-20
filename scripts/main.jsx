@@ -77,8 +77,8 @@ const Modal = ({onClose, children}) => {
 		setTimeout(_=>onClose(), 500)
 	}
 	return (
-		<div className={`modal ${modalOpen ? "open" : ""}`}>
-			<div className="content">
+		<div className={`modal ${modalOpen ? "open" : ""}`} onClick={handleClose}>
+			<div className="content" onClick={e => e.stopPropagation()}>
 				<i className="fa-solid fa-circle-xmark close" onClick={handleClose}></i>
 				{children}
 			</div>

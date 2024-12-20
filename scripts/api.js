@@ -86,18 +86,50 @@ class API_provider {
 		},
 		{
 			id: "6", name: "Сметана 20%",
-			img: "https://s.pn.com.ua/i/md/9309/4138564/4138564_00p.jpg",
+			img: "https://s.pn.com.ua/i/md/9309/4138586/4138586_00p.jpg",
 			price: 50, weight: 380,
 			category: "2", package_type: "2",
+		},
+		{
+			id: "7", name: "Сметана 15%",
+			img: "https://s.pn.com.ua/i/md/9309/4138547/4138547_00p.jpg",
+			price: 50, weight: 325,
+			category: "2", package_type: "1",
+		},
+		{
+			id: "8", name: "Сметана 20%",
+			img: "https://s.pn.com.ua/i/md/9309/4138581/4138581_00p.jpg",
+			price: 55, weight: 325,
+			category: "2", package_type: "1",
+		},
+		{
+			id: "9", name: "Коктейль «Шоколад»",
+			img: "https://www.tablycjakalorijnosti.com.ua/file/image/foodstuff/5361605563834ad38ed89c87467a2fd2/07a37a7937dc4755a8b33a0313da08e6",
+			price: 25, weight: 500,
+			category: "4", package_type: "3",
+		},
+		{
+			id: "10", name: "Коктейль «Полуниця»",
+			img: "https://www.tablycjakalorijnosti.com.ua/file/image/foodstuff/85b200a65c6041a086835e6fbef2d5d5/35fe843784d540e48088db0ed5dc294d",
+			price: 25, weight: 500,
+			category: "4", package_type: "3",
+		},
+		{
+			id: "11", name: "Коктейль «Банан»",
+			img: "https://www.tablycjakalorijnosti.com.ua/file/image/foodstuff/235a4b6e76d64b4aad3d055b0791e325/42891b226d0e4abbb0c872e55ccbd7a7?w=300",
+			price: 25, weight: 500,
+			category: "4", package_type: "3",
 		},
 	]
 	categories = [
 		{id: "1", name: "Сир плавлений"},
 		{id: "2", name: "Сметана"},
 		{id: "3", name: "Десерт сирковий"},
+		{id: "4", name: "Коктейль молочний"},
 	]
 	package_types = [
 		{id: "1", name: "Стакан"},
 		{id: "2", name: "Плівка"},
+		{id: "3", name: "Пляшка"},
 	]
 }
